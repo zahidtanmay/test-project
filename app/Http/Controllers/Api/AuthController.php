@@ -49,16 +49,24 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
+        $password = Hash::make($request->input('password'));
         $newUser = User::create([
             'email' => $request->input('email'),
-            'password' => Hash::make($request->input('password'))
+            'password' => $request->password
         ]);
 
         $token = $newUser->createToken('api_token');
 
         return response()->json([
             'user' => $newUser,
+            'password' => $password,
             'token' => $token->plainTextToken
         ]);
+    }
+
+    public function logout()
+    {
+        $user = auth()->user(); //or Auth::user()
+        $user->tokens()->where('id', $user->currentAccessToken()->id)->delete();
     }
 }

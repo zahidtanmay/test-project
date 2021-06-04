@@ -3,23 +3,23 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Todo;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class TodoController extends Controller
 {
     /**
      * List Todos for only the authenticated user
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index(Request $request)
+    public function index()
     {
-        $todos = [];
-
-        //TODO: Implement this method
-
-        return response()->json($todos);
+        $todos = Todo::where('user_id', auth()->user()->id)->get();
+        return response()->json($todos, 200);
     }
 
     /**
@@ -30,25 +30,31 @@ class TodoController extends Controller
      */
     public function store(Request $request)
     {
-        $todo = null;
+        $request->validate([
+            'description' => ['required'],
+        ]);
 
-        //TODO: Implement this method
+        $todo = Todo::create([
+            'description' => $request->description,
+            'user_id' => auth()->user()->id
+        ]);
 
-        return response()->json($todo);
+        return response()->json($todo, 201);
     }
 
     /**
      * Update a Todo for the authenticated user
      *
-     * @param Request $request
      * @param $todoId
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, $todoId)
+    public function update($todoId)
     {
-        //TODO: Implement this method
+        $todo = Todo::find($todoId);
+        $todo->completed_at = Carbon::now()->toDateTimeString();
+        $todo->save();
 
-        return response()->json([]);
+        return response()->json($todo, 200);
     }
 
     /**
@@ -58,10 +64,9 @@ class TodoController extends Controller
      * @param $todoId
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(Request $request, $todoId)
+    public function destroy($todoId)
     {
-        //TODO: Implement this method
-
-        return response()->json([]);
+        Todo::destroy($todoId);
+        return response()->json([], 200);
     }
 }

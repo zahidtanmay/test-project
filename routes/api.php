@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\TodoController;
 
 Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [AuthController::class, 'register']);
+Route::post('logout', [AuthController::class, 'logout']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('todos', [TodoController::class, 'index']);

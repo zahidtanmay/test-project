@@ -3,9 +3,10 @@
 </template>
 
 <script>
+import User from '../../src/apis/User'
 export default {
-    beforeMount() {
-        window.localStorage.removeItem('authToken');
+    async beforeMount() {
+        await localStorage.removeItem('authToken');
         this.$router.push({name: 'login'});
     }
 }

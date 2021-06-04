@@ -12,7 +12,7 @@ const router = new VueRouter({
     routes: [
         {
             path: '/',
-            redirect: {name: 'login'}
+            redirect: {name: 'todo-dashboard'}
         },
         {
             name: 'login',
@@ -50,8 +50,10 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
+    console.log(to, from)
     if(to.matched.some(record => record.meta.requiresAuth)) {
         const authToken = window.localStorage.getItem('authToken');
+        console.log(authToken)
         if (!authToken) {
             next({
                 name: 'login',
